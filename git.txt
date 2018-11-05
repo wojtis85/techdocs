@@ -1,0 +1,193 @@
+--------------------------
+-- UNIX                 --
+--------------------------
+cd ~ //get to home dir
+ls -la //list including hidden files
+cat file.txt //can be use to show content of the file in the console
+
+--------------------------
+-- GIT                  --
+--------------------------
+^ //refers to the parent eg. HEAD^ parent of current head
+^^ // refers to grantparent, ^^^ and so on
+~n //refers to n generations back eg. HEAD~1 = HEAD~ = HEAD^ , HEAD~2 = HEAD^^, HEAD~3 = HEAD^^^
+--config--------------------------
+
+which git
+git --version
+
+git config --list //list config 
+git config --system xxx //system config
+git config --global xxx //user config
+git config xxx //project config
+
+git config --global user.name "username"
+git config --global user.email "emailaddress"
+git config --global core.editor "editorname"  // edit default editor eg. "mate -wl1" "nano" "vi"
+git config --global color.ui true //enable colors in the interface
+
+
+git config user.name -show value of user.name variable
+
+git help  //help  control: space-forward f-forward b-back q-quit
+man git-log //help
+
+--creating repo--------------------------
+git init
+
+--commit--------------------------
+git add <filename> //add file to staging
+git add <foldername>/ //add all modified files in specific folder to staging
+git add . //add everything
+git reset HEAD <filename> //remove file from staging
+git reset --hard HEAD //resets all changes since last commit in staging index and working copy
+git reset <revision> //rewind HEAD pointer to specified revision, options: --soft --mixed --hard
+git commit -m "message" //commit all changes in staging
+git commit -a -m "message" //-a option add all modifications (only!) to stagind and commits them
+git commit -am "message" //same
+
+--undo changes-------------------
+git checkout <filename/foldername/branchname> //checkout file/folder/branch from repo working directory. Local copy will be overwriten by repo verion of the file
+git checkout -- <filename/foldername> //-- asure to stay in the same branch and checkout just files
+git checkout <revision> -- <filename> //revert file to specific previous revision and puts it in staging and into working directory
+git revert <revision> // Revert repo to version prior to specified revision (revert revision), change is automatically commited into repo //-n no commit opion. It revert changes in all files in the reverting commit. It may ask for manual conflict resolution.
+git revert --abort //abort unfinished revert
+
+//It is possible to make changes of last commit. We can change content and commit message
+git commit --amend -m "message" //it will ammend last commit instead of creating new one. Fisrt we might want to make some files changes and add them with git add
+
+git clean -f //remove all untracked files from working directory
+git clean -n //dry-run - list all untracked files from working directory
+// -d remove also untracked folders -i interactive mode -e <pattern> infore files with the name pattern -x ignore .gitignore and removes everything -X removed files ignored by git
+
+--commit log-----------------------
+git log //show commits list with commit messages
+git log <filename> //logs for particular file
+git log --follow <filename> //show full list of commits also before file renames and moves
+git log -n <number> //shows number of last commits
+git log -<number> //shows number of last commits
+git log --since=<date> //show commits done since specific date //--after does the same
+git log --until=<date> //show commits done until specific date //--before does the same
+//also works with phrases liek "2 weeks ago", "3 days ago" 2.weeks, 3.days, etc.
+git log --author=<name> //show commits done by specific person
+git log  --grep="text" //show commits with specific text in commit message
+git log --oneline //short version of log
+git log <rev1>..<rev2> // schows commits between two revisions
+git log <rev>.. // schows commits since prticular revisions
+git log -p //shows more details, shows changes between commits (like diff)
+git log --stat --summary //shows more details
+git log --format=oneline //like with --oneline but shows full SHA
+git log --online --graph --all --decorate //nice cimbination
+git log --format=<format> //formats output eg. short, medium, full, fuller, email, raw
+git log --graph //draw grapf of commits
+git log <branch_name> //shows commits from specific branch
+
+git show <SHA> //show details of specific commit, folder, file
+git show --format=<format> <SHA> // formats output eg. oneline
+
+--diff---------------------------
+git diff //compares all changes between repository and working copy -old version +new version
+git diff <filename> //diff for specific file
+git diff --staged //diff between repository and staging  // before 1.7 called --cached
+git diff --color-words <filename> //color changes in one line instead if showing two lines (new/old)
+//navigation: b - previous page, n - next page, q - quit
+//(-) + shift + s + return wrap lines
+git diff <rev> //shows diff between specific revision and working copy
+git diff <rev> <filename> //or specific file shows diff fbetween specific revision and working copy
+git diff <rev1>..<rev2> //compares to commits
+//options: --stat --summary -b //ignores spacing changes -w //ignores all spaces
+git diff <branch1>..<branch2> //comparing two branches
+
+--delete/rename move-------------
+git rm <filename> //remove file (need commit like add)
+//-r option to remove folder
+git rm --cached <filename> //Tt will untrack already tracked file without deleteing it from working copy, it means that after commit file will be deleted from repo index but will stay on hard drive. Remove file from staging index, it stays in working copy but further changes won't be tracked, file might also be added to .gitignore to ignore it.
+git mv <oldname> <newname> //rename or move file
+
+--ignoring files-----------------
+Project Ignored Files should be stored in the repository
+create .gitignore file in project root and add there files to be ignored
+it can use patterns with * ! [] etc. # is a comment
+can ignore whole folders: foldername/
+
+Global User Ignored Files are not stored in repository
+~/.gitignore_global allows to ignore files for all projects on the computer
+1. create ~/.gitignore_global file 
+2. run command git config --global core.excludesfile ~/.gitignore_global //add ignore file to config
+
+https://github.com/github/gitignore //examples of .gitignore file for different projects
+
+--how to track empty folder-------
+Add invisible empty file to folder to start tacking it (eg. .gitkeep)
+
+--listing git tree
+git ls-tree <tree-ish> (<directory>) // list content on the specific tree-ish (HEAD, rev number etc.)
+
+--branch--------------------------
+git branch //lists local branches
+git branch -r //lists remote branches
+git branch -a //lists local and remote branches
+git branch <branch_name> //creates new branch from current branch
+git branch <branch_name> <source> //creates new branch from source; source can be HEAD, commit, branch or remote branch
+git checkout <branch_name> //switch to branch
+git checout -b <new_branch_name> //creates a new branch from current branch and switches to it
+git checout -b <new_branch_name> <source> //creates a new branch from source and switches to it; source can be HEAD, commit, branch or remote branch
+git diff <branch1>..<branch2> //comparing two branches
+git branch --merged //show all branches which are merged to current branch (means current branch contains all commits from those branches
+git branch -m <old_branch_name> <new_name> //rename brnch //synonym: --move
+git branch -d <branch_name> //deletes branch //synonym: --delete
+git branch -D <branch_name> //deletes branch even with unmarged changes
+--merging--
+Run from receiver!!
+git merge <branch_name> //merge branch_name into current branch
+//option --no-ff - force actaul merge insted of fast forward
+//option --ff-only - allows only to do fast forward
+--conflicts--
+git merge --abort //abort the merge process with conflicts
+manual: resolve the conflict, add, commit (can be without message - has default one)
+automatic - use in the middle of the merge:
+git mergetool --tool=<merge_tool_name> //will solve the conflicts by using specific tool
+
+--stash--------------------------
+git stash save "message" //save changes into stash
+git stash list //show list of items in stash
+git stash show stash@{<num>} //show items in specific stash position
+git stash show -p stash@{<num>} //show items in specific stash position as diff
+git stash pop <stash_item> //move changes from stash to active branch and removes them from stash
+git stash apply <stash_item> //move changes from stash to active branch and keeps them in stash
+git stash drop <stash_item> //deletes item from stash
+git stash clear //removes everything from stash
+
+--github-------------------------
+git remote //list remote repositories 
+git remote -v //list remote repositories with adresses
+git remote add <alias> <url> //add remote repository
+.git/config stores info about remote repos
+git remote rm <alias> //remove remote repository
+--
+git push -u <remote_rep_alias> <branch> //push branch to remote repo and start to track it
+//-u cause to track remote branch (--set-upstream) needed only on the first push
+//to start to track remote branch: 
+//git config branch.<branch>.remote <remote_alias>
+//git config branch.<branch>.merge refs/heads/master
+//in git 1.7: git branch --set-upstream <branch> <remote_alias>/<branch>
+git push <remote_rep_alias> <branch> //push branch to remote repo (without tracking)
+git push //push branch to remote repo (works only on tracked branches because git knows where to push)
+--
+git fetch <alias> //fetch from remote repo into local remote branch (eg. orygin/master), if there is only one remote repo configuren then <alias> can be ommited
+git merge <remote_branch> //merge remote branch into local (called from local branch)
+git pull <alias> //fetch remote repo and merge into local branch
+//git pull = git fetch + git merge
+--
+git branch -r //lists remote branches
+git clone <url> <folder_name>//clone remote repo to local drive to folder_name (if ommited then creates new folder with repo name)
+//-b / -branch <branch_name> will clone specific branch (in default takes main branch)
+--
+git push <alias> :<tracked_branch_name> //delete remote branch
+git push <alias> --delete <tracked_branch_name> //delete remote branch
+
+
+
+
+-------------------------------
+git remote set-url <url>
