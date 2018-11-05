@@ -81,6 +81,7 @@ git log --online --graph --all --decorate //nice cimbination
 git log --format=<format> //formats output eg. short, medium, full, fuller, email, raw
 git log --graph //draw grapf of commits
 git log <branch_name> //shows commits from specific branch
+git log --graph --decorate --oneline --abbrev-commit --all
 
 git show <SHA> //show details of specific commit, folder, file
 git show --format=<format> <SHA> // formats output eg. oneline
@@ -186,6 +187,19 @@ git clone <url> <folder_name>//clone remote repo to local drive to folder_name (
 git push <alias> :<tracked_branch_name> //delete remote branch
 git push <alias> --delete <tracked_branch_name> //delete remote branch
 
+--command aliases in .gitconfig----------
+git config --global alias.<alias> "<command>" //eg. git config --global alias.st status
+//in .gitconfig file
+//[alias]
+//        st = status
+//
+//common or useful
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.br branch
+git config --global alias.df diff
+git config --global alias.logg "log --graph --decorate --oneline --abbrev-commit --all"
 
 
 
