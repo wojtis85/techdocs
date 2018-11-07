@@ -30,6 +30,7 @@ git config --global color.ui true //enable colors in the interface
 git config user.name -show value of user.name variable
 
 git help  //help  control: space-forward f-forward b-back q-quit
+git help <command>
 man git-log //help
 
 --creating repo--------------------------
@@ -102,7 +103,7 @@ git diff <branch1>..<branch2> //comparing two branches
 --delete/rename move-------------
 git rm <filename> //remove file (need commit like add)
 //-r option to remove folder
-git rm --cached <filename> //Tt will untrack already tracked file without deleteing it from working copy, it means that after commit file will be deleted from repo index but will stay on hard drive. Remove file from staging index, it stays in working copy but further changes won't be tracked, file might also be added to .gitignore to ignore it.
+git rm --cached <filename> //it will untrack already tracked file without deleteing it from working copy, it means that after commit file will be deleted from repo index but will stay on hard drive. Remove file from staging index, it stays in working copy but further changes won't be tracked, file might also be added to .gitignore to ignore it.
 git mv <oldname> <newname> //rename or move file
 
 --ignoring files-----------------
@@ -174,6 +175,7 @@ git push -u <remote_rep_alias> <branch> //push branch to remote repo and start t
 //in git 1.7: git branch --set-upstream <branch> <remote_alias>/<branch>
 git push <remote_rep_alias> <branch> //push branch to remote repo (without tracking)
 git push //push branch to remote repo (works only on tracked branches because git knows where to push)
+git push --force //force push, local branch will replace remote branch //alias -f
 --
 git fetch <alias> //fetch from remote repo into local remote branch (eg. orygin/master), if there is only one remote repo configuren then <alias> can be ommited
 git merge <remote_branch> //merge remote branch into local (called from local branch)
@@ -186,6 +188,23 @@ git clone <url> <folder_name>//clone remote repo to local drive to folder_name (
 --
 git push <alias> :<tracked_branch_name> //delete remote branch
 git push <alias> --delete <tracked_branch_name> //delete remote branch
+
+--tags---------------------
+git tag <tag_name> <SHA> //creates a lightweight tag
+git tag -a <tag_name> -m "<message>" <SHA> //creates annotated tag
+git tag <tag_name> //same as: git tag <tag_name> HEAD
+git tag / git tag -l / git tag --list //lists tags
+git tag -l "<pattern>" //lists tags with names matching the pattern
+//-n shows annotations on the list 
+git tag -d <tag_name> //delete tag //alias: --delete
+//tags has to be pushed explicitely to remote repo but are pulled together with other stuff
+git push <remote_alias> <tag_name> //push tag to remote repo
+git push <remote_alias> --tags //push all tags to remote repo
+git fetch --tags //fetch all tags and necessary commits from remote repo
+//remote tags can be deleted the same way as the remote branches
+git checkout -b <new_branch_name> <tag_name> //creates new branch from the tag
+git checkout <tag_name> //move HEAD to the commit pointed bz tag (do not create new branch)
+
 
 --command aliases in .gitconfig----------
 git config --global alias.<alias> "<command>" //eg. git config --global alias.st status
