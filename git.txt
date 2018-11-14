@@ -9,14 +9,14 @@ cat file.txt //can be use to show content of the file in the console
 -- GIT                  --
 --------------------------
 ^ //refers to the parent eg. HEAD^ parent of current head
-^^ // refers to grantparent, ^^^ and so on
+^^ // refers to grandparent, ^^^ and so on
 ~n //refers to n generations back eg. HEAD~1 = HEAD~ = HEAD^ , HEAD~2 = HEAD^^, HEAD~3 = HEAD^^^
 --config--------------------------
 
 which git
 git --version
 
-git config --list //list config 
+git config --list //list config
 git config --system xxx //system config
 git config --global xxx //user config
 git config xxx //project config
@@ -24,7 +24,8 @@ git config xxx //project config
 git config --global user.name "username"
 git config --global user.email "emailaddress"
 git config --global core.editor "editorname"  // edit default editor eg. "mate -wl1" "nano" "vi"
-git config --global color.ui true //enable colors in the interface
+git config --global color.ui true //enable colours in the interface
+git config --global fetch.prune true //include prune by default in remote fetch operation
 
 
 git config user.name -show value of user.name variable
@@ -40,26 +41,29 @@ git init
 git add <filename> //add file to staging
 git add <foldername>/ //add all modified files in specific folder to staging
 git add . //add everything
+git add -i //--interactive //launches adding in interactive mode
+git add -p //--patch //launches patch mode
+//patch option is also available for stash, reset, checkout, commit
 git reset HEAD <filename> //remove file from staging
 git reset --hard HEAD //resets all changes since last commit in staging index and working copy
 git reset <revision> //rewind HEAD pointer to specified revision, options: --soft --mixed --hard
 git commit -m "message" //commit all changes in staging
-git commit -a -m "message" //-a option add all modifications (only!) to stagind and commits them
+git commit -a -m "message" //-a option adds all modifications (only! no new files will be added) to staging and commits them
 git commit -am "message" //same
 
 --undo changes-------------------
-git checkout <filename/foldername/branchname> //checkout file/folder/branch from repo working directory. Local copy will be overwriten by repo verion of the file
-git checkout -- <filename/foldername> //-- asure to stay in the same branch and checkout just files
+git checkout <filename/foldername/branchname> //checkout file/folder/branch from repo working directory. Local copy will be overwritten by repo version of the file
+git checkout -- <filename/foldername> //-- ensure to stay in the same branch and checkout just files
 git checkout <revision> -- <filename> //revert file to specific previous revision and puts it in staging and into working directory
-git revert <revision> // Revert repo to version prior to specified revision (revert revision), change is automatically commited into repo //-n no commit opion. It revert changes in all files in the reverting commit. It may ask for manual conflict resolution.
+git revert <revision> // Revert repo to version prior to specified revision (revert revision), change is automatically committed into repo //-n no commit option. It revert changes in all files in the reverting commit. It may ask for manual conflict resolution.
 git revert --abort //abort unfinished revert
 
 //It is possible to make changes of last commit. We can change content and commit message
-git commit --amend -m "message" //it will ammend last commit instead of creating new one. Fisrt we might want to make some files changes and add them with git add
+git commit --amend -m "message" //it will amend last commit instead of creating new one. First we might want to make some files changes and add them with git add
 
 git clean -f //remove all untracked files from working directory
 git clean -n //dry-run - list all untracked files from working directory
-// -d remove also untracked folders -i interactive mode -e <pattern> infore files with the name pattern -x ignore .gitignore and removes everything -X removed files ignored by git
+// -d remove also untracked folders -i interactive mode -e <pattern> ignore files with the name pattern -x ignore .gitignore and removes everything -X removed files ignored by git
 
 --commit log-----------------------
 git log //show commits list with commit messages
@@ -69,16 +73,16 @@ git log -n <number> //shows number of last commits
 git log -<number> //shows number of last commits
 git log --since=<date> //show commits done since specific date //--after does the same
 git log --until=<date> //show commits done until specific date //--before does the same
-//also works with phrases liek "2 weeks ago", "3 days ago" 2.weeks, 3.days, etc.
+//also works with phrases like "2 weeks ago", "3 days ago" 2.weeks, 3.days, etc.
 git log --author=<name> //show commits done by specific person
 git log  --grep="text" //show commits with specific text in commit message
 git log --oneline //short version of log
-git log <rev1>..<rev2> // schows commits between two revisions
-git log <rev>.. // schows commits since prticular revisions
+git log <rev1>..<rev2> // shows commits between two revisions
+git log <rev>.. // shows commits since particular revision
 git log -p //shows more details, shows changes between commits (like diff)
 git log --stat --summary //shows more details
 git log --format=oneline //like with --oneline but shows full SHA
-git log --online --graph --all --decorate //nice cimbination
+git log --online --graph --all --decorate //nice combination
 git log --format=<format> //formats output eg. short, medium, full, fuller, email, raw
 git log --graph //draw grapf of commits
 git log <branch_name> //shows commits from specific branch
@@ -91,11 +95,11 @@ git show --format=<format> <SHA> // formats output eg. oneline
 git diff //compares all changes between repository and working copy -old version +new version
 git diff <filename> //diff for specific file
 git diff --staged //diff between repository and staging  // before 1.7 called --cached
-git diff --color-words <filename> //color changes in one line instead if showing two lines (new/old)
+git diff --color-words <filename> //colour changes in one line instead if showing two lines (new/old)
 //navigation: b - previous page, n - next page, q - quit
 //(-) + shift + s + return wrap lines
 git diff <rev> //shows diff between specific revision and working copy
-git diff <rev> <filename> //or specific file shows diff fbetween specific revision and working copy
+git diff <rev> <filename> //or specific file shows diff between specific revision and working copy
 git diff <rev1>..<rev2> //compares to commits
 //options: --stat --summary -b //ignores spacing changes -w //ignores all spaces
 git diff <branch1>..<branch2> //comparing two branches
@@ -103,7 +107,7 @@ git diff <branch1>..<branch2> //comparing two branches
 --delete/rename move-------------
 git rm <filename> //remove file (need commit like add)
 //-r option to remove folder
-git rm --cached <filename> //it will untrack already tracked file without deleteing it from working copy, it means that after commit file will be deleted from repo index but will stay on hard drive. Remove file from staging index, it stays in working copy but further changes won't be tracked, file might also be added to .gitignore to ignore it.
+git rm --cached <filename> //it will untrack already tracked file without deleting it from working copy, it means that after commit file will be deleted from repo index but will stay on hard drive. Remove file from staging index, it stays in working copy but further changes won't be tracked, file might also be added to .gitignore to ignore it.
 git mv <oldname> <newname> //rename or move file
 
 --ignoring files-----------------
@@ -114,7 +118,7 @@ can ignore whole folders: foldername/
 
 Global User Ignored Files are not stored in repository
 ~/.gitignore_global allows to ignore files for all projects on the computer
-1. create ~/.gitignore_global file 
+1. create ~/.gitignore_global file
 2. run command git config --global core.excludesfile ~/.gitignore_global //add ignore file to config
 
 https://github.com/github/gitignore //examples of .gitignore file for different projects
@@ -129,20 +133,24 @@ git ls-tree <tree-ish> (<directory>) // list content on the specific tree-ish (H
 git branch //lists local branches
 git branch -r //lists remote branches
 git branch -a //lists local and remote branches
+git branch --merged //lists branches which were merged into current branch
+git branch --no-merged //lists branches which were not merged into current branch
+git branch -r --merged //lists remote branches which were merged into current branch
+git branch --merged <SHA/tag>//lists branches which were merged into current branch (till specific SHA/tag)
 git branch <branch_name> //creates new branch from current branch
 git branch <branch_name> <source> //creates new branch from source; source can be HEAD, commit, branch or remote branch
 git checkout <branch_name> //switch to branch
-git checout -b <new_branch_name> //creates a new branch from current branch and switches to it
-git checout -b <new_branch_name> <source> //creates a new branch from source and switches to it; source can be HEAD, commit, branch or remote branch
+git checkout -b <new_branch_name> //creates a new branch from current branch and switches to it
+git checkout -b <new_branch_name> <source> //creates a new branch from source and switches to it; source can be HEAD, commit, branch or remote branch
 git diff <branch1>..<branch2> //comparing two branches
 git branch --merged //show all branches which are merged to current branch (means current branch contains all commits from those branches
-git branch -m <old_branch_name> <new_name> //rename brnch //synonym: --move
+git branch -m <old_branch_name> <new_name> //rename brunch //synonym: --move
 git branch -d <branch_name> //deletes branch //synonym: --delete
-git branch -D <branch_name> //deletes branch even with unmarged changes
+git branch -D <branch_name> //deletes branch even with unmerged changes
 --merging--
 Run from receiver!!
 git merge <branch_name> //merge branch_name into current branch
-//option --no-ff - force actaul merge insted of fast forward
+//option --no-ff - force actual merge instead of fast forward
 //option --ff-only - allows only to do fast forward
 --conflicts--
 git merge --abort //abort the merge process with conflicts
@@ -161,15 +169,17 @@ git stash drop <stash_item> //deletes item from stash
 git stash clear //removes everything from stash
 
 --github-------------------------
-git remote //list remote repositories 
-git remote -v //list remote repositories with adresses
+git remote //list remote repositories
+git remote -v //list remote repositories with addresses
 git remote add <alias> <url> //add remote repository
 .git/config stores info about remote repos
 git remote rm <alias> //remove remote repository
+git remote prune <alias> //remove local tracking branches of remote branches which were deleted in remote repo
+git remote prune <alias> --dry-run //dry run of prune operation
 --
 git push -u <remote_rep_alias> <branch> //push branch to remote repo and start to track it
 //-u cause to track remote branch (--set-upstream) needed only on the first push
-//to start to track remote branch: 
+//to start to track remote branch:
 //git config branch.<branch>.remote <remote_alias>
 //git config branch.<branch>.merge refs/heads/master
 //in git 1.7: git branch --set-upstream <branch> <remote_alias>/<branch>
@@ -177,17 +187,18 @@ git push <remote_rep_alias> <branch> //push branch to remote repo (without track
 git push //push branch to remote repo (works only on tracked branches because git knows where to push)
 git push --force //force push, local branch will replace remote branch //alias -f
 --
-git fetch <alias> //fetch from remote repo into local remote branch (eg. orygin/master), if there is only one remote repo configuren then <alias> can be ommited
+git fetch <alias> //fetch from remote repo into local remote branch (eg. origin/master), if there is only one remote repo configured then <alias> can be omitted
 git merge <remote_branch> //merge remote branch into local (called from local branch)
 git pull <alias> //fetch remote repo and merge into local branch
 //git pull = git fetch + git merge
+git fetch --prune //fetch and prune at the same time //alias: -p
 --
 git branch -r //lists remote branches
-git clone <url> <folder_name>//clone remote repo to local drive to folder_name (if ommited then creates new folder with repo name)
+git clone <url> <folder_name>//clone remote repo to local drive to folder_name (if omitted then creates new folder with repo name)
 //-b / -branch <branch_name> will clone specific branch (in default takes main branch)
 --
 git push <alias> :<tracked_branch_name> //delete remote branch
-git push <alias> --delete <tracked_branch_name> //delete remote branch
+git push <alias> --delete <tracked_branch_name> //delete remote branch //also -d
 
 --tags---------------------
 git tag <tag_name> <SHA> //creates a lightweight tag
@@ -195,15 +206,30 @@ git tag -a <tag_name> -m "<message>" <SHA> //creates annotated tag
 git tag <tag_name> //same as: git tag <tag_name> HEAD
 git tag / git tag -l / git tag --list //lists tags
 git tag -l "<pattern>" //lists tags with names matching the pattern
-//-n shows annotations on the list 
+//-n shows annotations on the list
 git tag -d <tag_name> //delete tag //alias: --delete
-//tags has to be pushed explicitely to remote repo but are pulled together with other stuff
+//tags has to be pushed explicitly to remote repo but are pulled together with other stuff
 git push <remote_alias> <tag_name> //push tag to remote repo
 git push <remote_alias> --tags //push all tags to remote repo
 git fetch --tags //fetch all tags and necessary commits from remote repo
 //remote tags can be deleted the same way as the remote branches
 git checkout -b <new_branch_name> <tag_name> //creates new branch from the tag
-git checkout <tag_name> //move HEAD to the commit pointed bz tag (do not create new branch)
+git checkout <tag_name> //move HEAD to the commit pointed by tag (do not create new branch)
+
+--cherry picking------------------------
+git cherry-pick <SHA> //merge specific SHA into current branch and creates new commit
+git cherry-pick <SHA>..<SAH> //merge range of SHAs into current branch and creates new commit
+//--edit or -e let us edit commit message
+//in case of conflict we resolve it and:
+git add .
+git cherry-pick --continue //to continue cherry-pick after we resolved the conflict
+//or we abort:
+git cherry-pick --abort //cancel cherry-pick if there was a conflict
+
+--diff patches---------------------------
+git diff <from_commit> <to_commit> > <filename>.diff //create file with diff output
+//changes from <from_commit> wont be included unless we go one commit before
+git apply <filename>.diff //apply changes from the file (only in the working copy)
 
 
 --command aliases in .gitconfig----------
@@ -220,7 +246,8 @@ git config --global alias.br branch
 git config --global alias.df diff
 git config --global alias.logg "log --graph --decorate --oneline --abbrev-commit --all"
 
-
+git prune //removes unreachable objects (part of garbage collector)
+git gc //runs garbage collector
 
 -------------------------------
 git remote set-url <url>
