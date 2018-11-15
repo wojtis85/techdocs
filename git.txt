@@ -230,6 +230,12 @@ git cherry-pick --abort //cancel cherry-pick if there was a conflict
 git diff <from_commit> <to_commit> > <filename>.diff //create file with diff output
 //changes from <from_commit> wont be included unless we go one commit before
 git apply <filename>.diff //apply changes from the file (only in the working copy)
+git format-patch <from_commit>..<to_commit> //creates formatted patches, one patch per commit and contains commit message, each patch has a mailbox message format
+git format-patch <branch> //create formatted patches from the diff between current branch and given branch
+git format-patch -1 <SHA> //exports one single commit
+//-o <directory> this option lets us to specify where generated files should be stored
+//--stdout > <filename>.patch let us to store all patches in one file
+git am <filename>.patch //applies formatted patch, commits them with original commit message but commit SHA will be different
 
 
 --command aliases in .gitconfig----------
