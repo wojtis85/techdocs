@@ -79,17 +79,36 @@ git log  --grep="text" //show commits with specific text in commit message
 git log --oneline //short version of log
 git log <rev1>..<rev2> // shows commits between two revisions
 git log <rev>.. // shows commits since particular revision
-git log -p //shows more details, shows changes between commits (like diff)
+git log -p //--patch //shows more details, shows changes between commits (like diff)
+git log -L <startline>,<endline>:<filename> //shows changes from the line range in specific file
 git log --stat --summary //shows more details
 git log --format=oneline //like with --oneline but shows full SHA
-git log --online --graph --all --decorate //nice combination
+git log --oneline --graph --all --decorate //nice combination
 git log --format=<format> //formats output eg. short, medium, full, fuller, email, raw
 git log --graph //draw grapf of commits
 git log <branch_name> //shows commits from specific branch
 git log --graph --decorate --oneline --abbrev-commit --all
+//less options
+// /<phrase> finds phrase in the file, "n" jumps to the next occurrence, "N" jumps to previous occurrence
 
 git show <SHA> //show details of specific commit, folder, file
 git show --format=<format> <SHA> // formats output eg. oneline
+
+--blame--------------------------
+git blame <filename> //shows the file with annotations (commit, author, timestamp)
+git blame -w <filename> //ignores whitespaces
+git blame -L <startline>,<endline> <filename> //shows only specified line range
+//eg. -L 100,150 -L 100,+50
+git blame <revision> -- <filename> //shows file state at specific revision
+git config --global alias.praise blame //common alias for blame
+git annotate <filename> //similar to blame but with a bit different output format
+
+--bisect-------------------------
+//let us to find commit which introduced the issue (split-half method)
+git bisect start //start bisect process
+git bisect bad <treeish> //mark revision as bad, if treeish skipped then it takes current HEAD //synonym: old
+git bisect good <treeish> //mark revision as good, if treeish skipped then it takes current HEAD //synonym: new
+git bisect reset //reset working copy to the state before bisect was started
 
 --diff---------------------------
 git diff //compares all changes between repository and working copy -old version +new version
@@ -193,6 +212,10 @@ git pull <alias> //fetch remote repo and merge into local branch
 //git pull = git fetch + git merge
 git fetch --prune //fetch and prune at the same time //alias: -p
 --
+git pull --rebase //-r //fetch changes and do rebase (instead of merge)
+//--rebase-preserve //locally created merge commits will not be flattened
+//--rebase-interactive //uses rebase in interactive mode
+--
 git branch -r //lists remote branches
 git clone <url> <folder_name>//clone remote repo to local drive to folder_name (if omitted then creates new folder with repo name)
 //-b / -branch <branch_name> will clone specific branch (in default takes main branch)
@@ -226,7 +249,26 @@ git cherry-pick --continue //to continue cherry-pick after we resolved the confl
 //or we abort:
 git cherry-pick --abort //cancel cherry-pick if there was a conflict
 
---diff patches---------------------------
+--rebase--------------------------------
+git rebase <base_branch> //rebase changes from current branch into tip of base branch
+git rebase <base_branch> <rebase_branch> //rebase changes from rebase_branch into tip of base branch
+git merge-base <branch1> <branch2> //return commit when branch2 diverse from branch1
+git rebase --continue //to continue rebasing after resolving conflicts
+git rebase --skip //skip commit which cause conflicts during rebasing
+git rebase --abort //stop and abort rebasing
+//Steps: resolve conflict -> git add <filename> -> git rebase --continue
+git rebase --onto <newbase> <upstream> <branch> //rebasing to different branch (without common ancestor)
+//it rebase difference between branch and upstream onto tip of newbase branch
+--
+git reset --hard ORIG_HEAD //let us to revert simple rebase by reseting to ORIG_HEAD (temporary head created before rebase, reset or merge)
+git rebase --onto <SHA_of_previous_base> <current_base_branch> <rebase_branch> //rebase back to the previous base
+--
+//-i --interactive //rebase in interactive mode
+//squash //squashes commit into previous one and concatenates commit messages
+//fixup //squashes commit into previous one but discard commit message and let us to set the new one
+git rebase -i HEAD~3 //let us to modify 3 last commits without actually rebasing them
+
+--diff patches--------------------------
 git diff <from_commit> <to_commit> > <filename>.diff //create file with diff output
 //changes from <from_commit> wont be included unless we go one commit before
 git apply <filename>.diff //apply changes from the file (only in the working copy)
@@ -236,7 +278,6 @@ git format-patch -1 <SHA> //exports one single commit
 //-o <directory> this option lets us to specify where generated files should be stored
 //--stdout > <filename>.patch let us to store all patches in one file
 git am <filename>.patch //applies formatted patch, commits them with original commit message but commit SHA will be different
-
 
 --command aliases in .gitconfig----------
 git config --global alias.<alias> "<command>" //eg. git config --global alias.st status
