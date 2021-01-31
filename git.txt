@@ -6,6 +6,23 @@ ls -la //list including hidden files
 cat file.txt //can be use to show content of the file in the console
 
 --------------------------
+-- SSH                  --
+--------------------------
+1. Check SSH key
+ls -al ~/.ssh
+2. Generate new key
+ssh-keygen -t ed25519 -C "your_email@example.com"
+(for legacy systems: ssh-keygen -t rsa -b 4096 -C "your_email@example.com" )
+3. Strt ssh-agent
+eval `ssh-agent -s`
+4. Add key to the agent
+ssh-add ~/.ssh/id_ed25519
+5. Copy the key
+clip < ~/.ssh/id_ed25519.pub
+6. Add key to GitHub/GitLab
+
+
+--------------------------
 -- GIT                  --
 --------------------------
 ^ //refers to the parent eg. HEAD^ parent of current head
